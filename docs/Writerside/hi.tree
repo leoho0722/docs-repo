@@ -10,6 +10,9 @@
         <toc-element topic="airflow-mnist-example.md">
             <toc-element topic="airflow-mnist-example-Install-on-Ubuntu.md"/>
         </toc-element>
+        <toc-element topic="mnist-openfaas-example.md">
+            <toc-element topic="mnist-openfaas-example-Install-Install-on-Ubuntu.md"/>
+        </toc-element>
         <toc-element topic="kubernetes.md">
             <toc-element topic="Using-NVIDIA-GPU-Resources-on-Kubernetes.md"/>
         </toc-element>
