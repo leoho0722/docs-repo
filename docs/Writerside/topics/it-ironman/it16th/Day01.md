@@ -10,7 +10,7 @@
 
 而今年要來分享的是，這幾個月接觸的 FIDO2 無密碼身份驗證的一些心得？
 
-![FIDO Alliance logo-1024x512.jpg](FIDO Alliance logo-1024x512.jpg)
+![FIDO_Alliance_logo_1024_512.jpg](FIDO_Alliance_logo_1024_512.jpg)
 
 ▲ 圖取自 [FIDO Alliance](https://fidoalliance.org/overview/legal/logo-usage/) 官網
 
