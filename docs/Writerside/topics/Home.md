@@ -7,3 +7,4 @@
 * [mnist-openfaas-example](mnist-openfaas-example.md)
   * [GitHub Repository](https://github.com/leoho0722/mnist-openfaas-example)
 * [Kubernetes](kubernetes.md)
+* [IT 邦鐵人賽](it-ironman.md)
