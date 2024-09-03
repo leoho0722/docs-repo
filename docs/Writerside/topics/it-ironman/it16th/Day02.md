@@ -16,7 +16,7 @@
 
 ## FIDO 聯盟
 
-![FIDO Alliance Passkey logo](FIDO Alliance logo-1024x512.jpg)
+![FIDO Alliance logo-1024x512.jpg](FIDO Alliance logo-1024x512.jpg)
 
 ▲ 圖取自 [FIDO Alliance](https://fidoalliance.org/overview/legal/logo-usage/) 官網
 
