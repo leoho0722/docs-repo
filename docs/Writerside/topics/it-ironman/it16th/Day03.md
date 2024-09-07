@@ -1,4 +1,4 @@
-# 【Go！帶你探索 FIDO2 資安技術全端應用】Day03 - 認識 WebAuthn (1)
+# 【Go！帶你探索 FIDO2 資安技術全端應用】Day 03 - 認識 WebAuthn (1)
 
 昨天簡單介紹了 FIDO 聯盟，以及目前的 FIDO 無密碼身份驗證標準分別有 FIDO 跟 FIDO2
 
