@@ -7,3 +7,4 @@
   * [Day 04 - 認識 WebAuthn (2)](Day04.md)
   * [Day 05 - 認識 WebAuthn (3)](Day05.md)
   * [Day 06 - 認識 CTAP](Day06.md)
+  * [Day 07 - 認識 Passkeys](Day07.md)

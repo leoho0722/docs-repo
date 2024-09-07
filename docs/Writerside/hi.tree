@@ -26,7 +26,9 @@
                 <toc-element topic="Day03.md"/>
                 <toc-element topic="Day04.md"/>
                 <toc-element topic="Day05.md"/>
-                <toc-element topic="Day06.md"/>
+                <toc-element topic="Day06.md">
+                </toc-element>
+                <toc-element topic="Day07.md"/>
             </toc-element>
         </toc-element>
     </toc-element>
