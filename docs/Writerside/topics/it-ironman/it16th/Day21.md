@@ -18,13 +18,13 @@
 
 可以透過 Visual Studio Code 的偵錯功能或是在 Terminal 輸入下面指令
 
-```sh
+```shell
 go run main.go
 ```
 
 WebAuthn RP Server run 起來之後，接著使用 ngrok 取得一個免費公開的測試用 domain
 
-```sh
+```shell
 ngrok http 8080 # 8080 換成在 route.go 中設定的 port 號
 ```
 
@@ -32,7 +32,7 @@ ngrok http 8080 # 8080 換成在 route.go 中設定的 port 號
 
 PostgreSQL 資料庫我們是使用 Docker Compose 執行的，所以就使用 docker compose 的指令來執行即可
 
-```sh
+```shell
 docker compose up -d # -d 是為了讓他在背景跑，不會阻塞住當前 Terminal
 ```
 
