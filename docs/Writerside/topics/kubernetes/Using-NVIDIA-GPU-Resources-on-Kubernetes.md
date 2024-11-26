@@ -246,7 +246,7 @@ Next, copy content of `/etc/containerd/config.toml` into config.toml in current 
 
 Such as below of `[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]` and `[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]` section
 
-```Plain Text
+```Text
 [plugins]
   [plugins."io.containerd.grpc.v1.cri"]
   ...
@@ -273,7 +273,7 @@ Next, update `default_runtime_name` from `runc` to `nvidia`.
 
 Such as below `[plugins."io.containerd.grpc.v1.cri".containerd]` section
 
-```Plain Text
+```Text
 [plugins]
   [plugins."io.containerd.grpc.v1.cri"]
   ...
