@@ -230,8 +230,75 @@ sudo systemctl restart docker
 
 #### Configuring containerd (for Kubernetes)
 
+Before execute NVIDIA containerd for Kubernetes configure command, copy original containerd config.toml (in `/etc/containerd`) file to current directory first.
+
+```Shell
+sudo cp /etc/containerd/config.toml ./config.toml
+```
+
+Then, execute NVIDIA containerd for Kubernetes configure command
+
 ```Shell
 sudo nvidia-ctk runtime configure --runtime=containerd
+```
+
+Next, copy content of `/etc/containerd/config.toml` into config.toml in current directory
+
+Such as below of `[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]` and `[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]` section
+
+```TOML
+[plugins]
+  [plugins."io.containerd.grpc.v1.cri"]
+  ...
+  
+    [plugins."io.containerd.grpc.v1.cri".containerd]
+      default_runtime_name = "runc"
+      ...
+      
+      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+      ...
+      
+        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
+          privileged_without_host_devices = false
+          runtime_engine = ""
+          runtime_root = ""
+          runtime_type = "io.containerd.runc.v2"
+  
+          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
+            BinaryName = "/usr/bin/nvidia-container-runtime"
+            SystemdCgroup = true
+```
+
+Next, update `default_runtime_name` from `runc` to `nvidia`.
+
+Such as below `[plugins."io.containerd.grpc.v1.cri".containerd]` section
+
+```TOML
+[plugins]
+  [plugins."io.containerd.grpc.v1.cri"]
+  ...
+  
+    [plugins."io.containerd.grpc.v1.cri".containerd]
+      default_runtime_name = "nvidia"
+      ...
+      
+      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+      ...
+      
+        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia]
+          privileged_without_host_devices = false
+          runtime_engine = ""
+          runtime_root = ""
+          runtime_type = "io.containerd.runc.v2"
+  
+          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.nvidia.options]
+            BinaryName = "/usr/bin/nvidia-container-runtime"
+            SystemdCgroup = true
+```
+
+Finally, restart containerd service
+
+```Shell
 sudo systemctl restart containerd
 ```
 
@@ -242,7 +309,7 @@ sudo systemctl restart containerd
 Deploy ```nvidia-device-plugin``` DaemonSet to Kubernetes Cluster
 
 ```Shell
-kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v0.14.5/nvidia-device-plugin.yml
+kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v0.17.0/deployments/static/nvidia-device-plugin.yml
 ```
 
 ### Check Pod can run GPU Jobs or not
@@ -281,7 +348,7 @@ Outputting ```Test PASSED``` means that GPU resources are successfully used in t
 Check whether ```Capacity``` and ```Allocatable``` are displayed ```nvidia.com/gpu```
 
 ```Shell
-kubectl describe node <Worker Node name>
+kubectl describe node <node name>
 
 # Example
 kubectl describe node ubuntu3070ti
