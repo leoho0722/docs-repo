@@ -6,21 +6,22 @@
   - [Check the default driver is existing or not](#check-the-default-driver-is-existing-or-not)
   - [List the default driver](#list-the-default-driver)
   - [Delete the default driver and reboot](#delete-the-default-driver-and-reboot)
-- [Install Nvidia CUDA](#install-nvidia-cuda)
+- [Install NVIDIA CUDA](#install-nvidia-cuda)
   - [Check NVIDIA CUDA](#check-nvidia-cuda)
 - [Install NVIDIA cuDNN](#install-nvidia-cudnn)
 - [Install DKMS](#install-dkms)
 - [Using NVIDIA GPU resources on Docker](#using-nvidia-gpu-resources-on-docker)
-  - [Install NVIDIA Container Toolkit](#install-nvidia-container-toolkit)
-    - [Installing with Apt](#installing-with-apt)
-    - [Configuration](#configuration)
-      - [Configuring Docker](#configuring-docker)
-      - [Configuring containerd (for Kubernetes)](#configuring-containerd-for-kubernetes)
+  - [Prerequisites: Install NVIDIA Container Toolkit](#prerequisites-install-nvidia-container-toolkit)
+  - [Configure Docker](#configure-docker)
 - [Using NVIDIA GPU resources on Kubernetes](#using-nvidia-gpu-resources-on-kubernetes)
-  - [Method 1: Install NVIDIA GPU Operator](#method-1-install-nvidia-gpu-operator)
-  - [Method 2: Install Kubernetes NVIDIA Device Plugin](#method-2-install-kubernetes-nvidia-device-plugin)
-  - [Check Pod can run GPU Jobs or not](#check-pod-can-run-gpu-jobs-or-not)
-  - [Check node can use GPU resource or not](#check-node-can-use-gpu-resource-or-not)
+  - [Prerequisites: Install NVIDIA Container Toolkit](#prerequisites-install-nvidia-container-toolkit_1)
+  - [Configure containerd (for Kubernetes)](#configure-containerd-for-kubernetes)
+  - [Install Method](#install-method)
+    - [Method 1: Install NVIDIA GPU Operator](#method-1-install-nvidia-gpu-operator)
+    - [Method 2: Install Kubernetes NVIDIA Device Plugin](#method-2-install-kubernetes-nvidia-device-plugin)
+  - [Validation](#validation)
+    - [Check Pod can run GPU Jobs or not](#check-pod-can-run-gpu-jobs-or-not)
+    - [Check node can use GPU resource or not](#check-node-can-use-gpu-resource-or-not)
 
 ## Remove default driver
 
@@ -55,7 +56,7 @@ sudo reboot
 
 ![截圖 2024-04-12 16.02.24.png](截圖_2024-04-12_16.02.24.png)
 
-## Install Nvidia CUDA
+## Install NVIDIA CUDA
 
 ```Shell
 sudo apt-get update -y
@@ -161,7 +162,7 @@ sudo dkms install -m nvidia -v <NVIDIA Driver Version>
 
 ## Using NVIDIA GPU resources on Docker
 
-### Install NVIDIA Container Toolkit
+### Prerequisites: Install NVIDIA Container Toolkit
 
 [NVIDIA Container Toolkit Official Installation Guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
 
@@ -190,9 +191,7 @@ sudo apt-get install -y nvidia-container-toolkit
 
 ![截圖 2024-04-12 17.47.34.png](截圖_2024-04-12_17.47.34.png)
 
-#### Configuration
-
-##### Configuring Docker
+### Configure Docker
 
 ```Shell
 sudo nvidia-ctk runtime configure --runtime=docker
@@ -233,7 +232,38 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
 
-##### Configuring containerd (for Kubernetes)
+## Using NVIDIA GPU resources on Kubernetes
+
+### Prerequisites: Install NVIDIA Container Toolkit {id="prerequisites-install-nvidia-container-toolkit_1"}
+
+[NVIDIA Container Toolkit Official Installation Guide](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
+
+#### Installing with Apt {id="installing-with-apt_1"}
+
+1. Configure the production repository
+
+```Shell
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+  && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+```
+
+2. Update the packages list from the repository
+
+```Shell
+sudo apt-get update
+```
+
+3. Install the NVIDIA Container Toolkit packages
+
+```Shell
+sudo apt-get install -y nvidia-container-toolkit
+```
+
+![截圖 2024-04-12 17.47.34.png](截圖_2024-04-12_17.47.34.png)
+
+### Configure containerd (for Kubernetes)
 
 Before execute NVIDIA containerd for Kubernetes configure command, copy original containerd config.toml (in `/etc/containerd`) file to current directory first.
 
@@ -307,13 +337,13 @@ Finally, restart containerd service
 sudo systemctl restart containerd
 ```
 
-## Using NVIDIA GPU resources on Kubernetes
+### Install Method
 
-### Method 1: Install NVIDIA GPU Operator {collapsible="true"}
+#### Method 1: Install NVIDIA GPU Operator {collapsible="true"}
 
 [NVIDIA GPU Operator Official Documentation](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/getting-started.html)
 
-#### Prerequisites: Install Helm
+##### Prerequisites: Install Helm
 
 ```Shell
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 \
@@ -321,16 +351,16 @@ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scr
     && ./get_helm.sh
 ```
 
-#### Add the NVIDIA Helm repository
+##### Add the NVIDIA Helm repository
 
 ```Shell
 helm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
     && helm repo update
 ```
 
-#### Install the GPU Operator
+##### Install the GPU Operator
 
-##### Option 1: Install the Operator with the default configuration {collapsible="true"}
+###### Option 1: Install the Operator with the default configuration {collapsible="true"}
 
 ```Shell
 helm install --wait --generate-name \
@@ -339,9 +369,9 @@ helm install --wait --generate-name \
     --version=v24.9.0
 ```
 
-##### Option 2: Install the Operator with the specify version {collapsible="true"}
+###### Option 2: Install the Operator with the specify version {collapsible="true"}
 
-###### GPU Operator Version and dependent version list of related Components
+GPU Operator Version and dependent version list of related Components
 
 | GPU Operator Version | CUDA Version | Driver Version | Container Toolkit Version | Device Plugin Version |
 |----------------------|--------------|----------------|---------------------------|-----------------------|
@@ -369,7 +399,7 @@ helm install --wait --generate-name \
     --version=$GPU_OPERATOR_VERSION
 ```
 
-##### Option 3: Pre-Installed NVIDIA GPU Drivers {collapsible="true"}
+###### Option 3: Pre-Installed NVIDIA GPU Drivers {collapsible="true"}
 
 ```Shell
 helm install --wait --generate-name \
@@ -379,7 +409,7 @@ helm install --wait --generate-name \
      --set driver.enabled=false
 ```
 
-##### Option 4: Pre-Installed NVIDIA GPU Drivers and NVIDIA Container Toolkit {collapsible="true"}
+###### Option 4: Pre-Installed NVIDIA GPU Drivers and NVIDIA Container Toolkit {collapsible="true"}
 
 ```Shell
 helm install --wait --generate-name \
@@ -390,7 +420,7 @@ helm install --wait --generate-name \
      --set toolkit.enabled=false
 ```
 
-### Method 2: Install Kubernetes NVIDIA Device Plugin {collapsible="true"}
+#### Method 2: Install Kubernetes NVIDIA Device Plugin {collapsible="true"}
 
 [Kubernetes NVIDIA Device Plugin Official GitHub Repo](https://github.com/NVIDIA/k8s-device-plugin)
 
@@ -400,9 +430,20 @@ Deploy ```nvidia-device-plugin``` DaemonSet to Kubernetes Cluster
 kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v0.17.0/deployments/static/nvidia-device-plugin.yml
 ```
 
-### Check Pod can run GPU Jobs or not
+Check the status of NVIDIA Device Plugin DaemonSet and Pods in a Kubernetes cluster
 
-#### Using NVIDIA GPU Operator {collapsible="true"}
+```Shell
+kubectl get ds -n kube-system
+kubectl get pods -n kube-system
+```
+
+![Check the status of NVIDIA Device Plugin DaemonSet and Pods in a Kubernetes cluster](check_nvidia_device_plugin_ds_pod_in_kubesystem.png)
+
+### Validation
+
+#### Check Pod can run GPU Jobs or not
+
+##### Using NVIDIA GPU Operator {collapsible="true"}
 
 Get the Pods of gpu-operator namespace in all Worker nodes
 
@@ -418,7 +459,7 @@ View the log output of Pod nvidia-cuda-validator deployed in all Worker nodes
 
 Outputting ```cuda workload validation is successful``` means that GPU resources are successfully used in the Pod.
 
-#### Using Kubernetes NVIDIA Device Plugin {collapsible="true"}
+##### Using Kubernetes NVIDIA Device Plugin {collapsible="true"}
 
 ```Shell
 cat <<EOF | kubectl apply -f -
@@ -449,9 +490,9 @@ Outputting ```Test PASSED``` means that GPU resources are successfully used in t
 
 ![截圖 2024-04-12 18.30.15.png](截圖_2024-04-12_18.30.15.png)
 
-### Check node can use GPU resource or not
+#### Check node can use GPU resource or not
 
-#### Using NVIDIA GPU Operator {collapsible="true" id="using-nvidia-gpu-operator_1"}
+##### Using NVIDIA GPU Operator {collapsible="true" id="using-nvidia-gpu-operator_1"}
 
 ```Shell
 kubectl get nodes -o wide
@@ -467,7 +508,7 @@ Check if the node is labeled with the following labels
 
 ![Check if the node is labeled with the following labels](check_node_is_labeled_following_labels_using_gpu_operator.png)
 
-#### Using Kubernetes NVIDIA Device Plugin {collapsible="true" id="using-kubernetes-nvidia-device-plugin_1"}
+##### Using Kubernetes NVIDIA Device Plugin {collapsible="true" id="using-kubernetes-nvidia-device-plugin_1"}
 
 Check whether ```Capacity``` and ```Allocatable``` are displayed ```nvidia.com/gpu```
 
