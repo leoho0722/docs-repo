@@ -2,9 +2,7 @@
 
 ## Contents
 
-* [airflow-mnist-example](airflow-mnist-example.md)
-  * [GitHub Repository](https://github.com/leoho0722/airflow-mnist-example)
-* [mnist-openfaas-example](mnist-openfaas-example.md)
-  * [GitHub Repository](https://github.com/leoho0722/mnist-openfaas-example)
+* [GitHub Repository Example Guide](GitHub-Repository-Example-Guide.md)
+* [NVIDIA GPU](NVIDIA-GPU.md)
 * [Kubernetes](kubernetes.md)
 * [IT 邦鐵人賽](it-ironman.md)
