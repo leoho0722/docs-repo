@@ -13,6 +13,8 @@
 - [Using NVIDIA GPU resources on Docker](#using-nvidia-gpu-resources-on-docker)
   - [Prerequisites: Install NVIDIA Container Toolkit](#prerequisites-install-nvidia-container-toolkit)
   - [Configure Docker](#configure-docker)
+  - [Validation](#validation_1)
+    - [Check Container can run GPU Jobs or not](#check-container-can-run-gpu-jobs-or-not)
 - [Using NVIDIA GPU resources on Kubernetes](#using-nvidia-gpu-resources-on-kubernetes)
   - [Prerequisites: Install NVIDIA Container Toolkit](#prerequisites-install-nvidia-container-toolkit_1)
   - [Configure containerd (for Kubernetes)](#configure-containerd-for-kubernetes)
@@ -69,6 +71,12 @@ Download the required CUDA Toolkit version from the NVIDIA official website
 
 ![截圖 2024-04-12 16.12.08.png](截圖_2024-04-12_16.12.08.png)
 
+It is recommended to refer to the Stable CUDA version specified in the official [PyTorch RELEASE.md](https://github.com/pytorch/pytorch/blob/main/RELEASE.md#release-compatibility-matrix).
+
+> Note: If you are using a newly released GPU model, such as the RTX 5090, it is recommended to install an Experimental version of CUDA.
+
+![PyTorch Release Compatibility Matrix](pytorch_release_ompatibility_matrix.png)
+
 The environment demonstrated here is
 
 * CUDA Toolkit 12.4.1
@@ -77,13 +85,22 @@ The environment demonstrated here is
 
 ![截圖 2024-04-12 16.13.46.png](截圖_2024-04-12_16.13.46.png)
 
+> Note: If you are using the `Ubuntu Desktop` for the operating system, you maybe occur the error such as `X-Server is running, please exit the X-Server before installing CUDA` during the installation. In this case, you need to stop the `X-Server` first.
+> 
+> You can follow the steps below to stop the `X-Server` and install CUDA.
+> 
+> ```Shell
+> sudo systemctl stop gdm
+> sudo systemctl set-default multi-user.target
+> ```
+
 ```Shell
 wget https://developer.download.nvidia.com/compute/cuda/12.4.1/local_installers/cuda_12.4.1_550.54.15_linux.run
 sudo sh cuda_12.4.1_550.54.15_linux.run
 ```
 
 After execution, you will see a UI-like installation menu.
-Enter accept to accept the terms of use
+Enter `accept` to accept the terms of use
 
 ![截圖 2024-04-12 16.49.14.png](截圖_2024-04-12_16.49.14.png)
 
@@ -106,6 +123,8 @@ export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 source ~/.bashrc
 ```
 
+> Note: If you are using `zsh`, you need to add the above two lines to `~/.zshrc` instead. And run `source ~/.zshrc` to apply the changes.
+
 ![截圖 2024-04-12 17.01.39.png](截圖_2024-04-12_17.01.39.png)
 
 ![截圖 2024-04-12 17.00.37.png](截圖_2024-04-12_17.00.37.png)
@@ -124,6 +143,8 @@ nvcc --version
 ## Install NVIDIA cuDNN
 
 Download the required cuDNN version from the NVIDIA official website
+
+> Note: The cuDNN version can refer to the Stable CUDA version specified in the official [PyTorch RELEASE.md](https://github.com/pytorch/pytorch/blob/main/RELEASE.md#release-compatibility-matrix).
 
 [NVIDIA cuDNN Official Download Website](https://developer.download.nvidia.com/compute/cudnn/redist/cudnn/)
 
@@ -231,6 +252,22 @@ sudo nano /etc/docker/daemon.json
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
+
+### Validation {id="validation_1"}
+
+#### Check Container can run GPU Jobs or not
+
+Run the following command to check if the NVIDIA GPU resources can be used in Docker.
+
+If the command runs successfully and displays the GPU information, it means that the NVIDIA GPU resources can be used in Docker.
+
+```Shell
+docker run --rm --gpus all ubuntu:latest nvidia-smi
+```
+
+The output should look similar to the following, indicating that the GPU resources are available.
+
+![截圖 2024-04-12 17.13.18.png](截圖_2024-04-12_17.13.18.png)
 
 ## Using NVIDIA GPU resources on Kubernetes
 
